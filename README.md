@@ -1,38 +1,44 @@
-# .
+# Convertisseur de devises
 
-This template should help get you started developing with Vue 3 in Vite.
+Projet Vue.js réalisé dans le cadre d'un TP.
 
-## Recommended IDE Setup
+## Description
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Cette application permet de convertir un montant entre plusieurs devises avec des taux fixes.
 
-## Recommended Browser Setup
+## Technologies
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+* Vue.js 3
+* Vite
+* JavaScript
+* HTML
+* CSS
 
-## Customize configuration
+## Devises
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+USD - EUR - TND - GBP - JPY - CAD
 
-## Project Setup
+## Fonctionnalités
 
-```sh
+* Choisir la devise source
+* Choisir la devise cible
+* Saisir un montant avec le clavier
+* Convertir le montant
+* Inverser les devises
+* Effacer le montant avec le bouton C
+
+## Installation
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+## Lancer le projet
 
-```sh
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+## Auteur
+Talbi Elyes 
 
-```sh
-npm run build
-```
