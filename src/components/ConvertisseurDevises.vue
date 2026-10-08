@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { devises, taux } from '../data/taux.js'
 
 // Montant saisi par l'utilisateur
@@ -92,6 +92,12 @@ function inverser() {
     convertir()
   }
 }
+// Conversion automatique
+watch([montant, deviseSource, deviseCible], () => {
+  if (parseFloat(montant.value) > 0) {
+    convertir()
+  }
+})
 </script>
 
 <template>
@@ -305,3 +311,5 @@ select {
   }
 }
 </style>
+
+
