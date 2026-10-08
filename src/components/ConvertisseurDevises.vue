@@ -1,5 +1,6 @@
+```vue
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { devises, taux } from '../data/taux.js'
 import { recupererTaux } from '../data/api.js'
 
@@ -134,9 +135,51 @@ watch([montant, deviseSource, deviseCible], () => {
   }
 })
 
-// Charger l'API au démarrage
+// Gestion du clavier physique
+function gererClavier(event) {
+  // Les chiffres du clavier
+  if (event.key >= '0' && event.key <= '9') {
+    appuyer(event.key)
+  }
+
+  // Le point décimal
+  else if (event.key === '.') {
+    appuyer('.')
+  }
+
+  // Effacer le dernier caractère
+  else if (event.key === 'Backspace') {
+    if (montant.value.length > 1) {
+      montant.value = montant.value.slice(0, -1)
+    } else {
+      montant.value = '0'
+    }
+
+    erreur.value = ''
+  }
+
+  // Entrée = convertir
+  else if (event.key === 'Enter') {
+    convertir()
+  }
+
+  // Escape = effacer
+  else if (event.key === 'Escape') {
+    appuyer('C')
+  }
+}
+
+// Charger l'API et activer le clavier physique
 onMounted(() => {
   chargerTaux()
+
+  // Écouter les touches du clavier
+  window.addEventListener('keydown', gererClavier)
+})
+
+// Supprimer l'écoute du clavier quand le composant est détruit
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', gererClavier)
 })
 </script>
 
@@ -351,3 +394,4 @@ select {
   }
 }
 </style>
+```
