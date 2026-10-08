@@ -1,6 +1,7 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { devises, taux } from '../data/taux.js'
+import { recupererTaux } from '../data/api.js'
 
 // Montant saisi par l'utilisateur
 const montant = ref('0')
@@ -17,6 +18,10 @@ const resultat = ref('')
 // Message d'erreur
 const erreur = ref('')
 
+// Taux utilisés pour la conversion
+// Au début, on utilise les taux fixes
+const tauxActuels = ref({ ...taux })
+
 // Touches du clavier numérique
 const touches = computed(() => [
   '7', '8', '9',
@@ -24,6 +29,34 @@ const touches = computed(() => [
   '1', '2', '3',
   'C', '0', '.'
 ])
+
+// Charger les taux depuis l'API
+async function chargerTaux() {
+  try {
+    const nouveauxTaux = await recupererTaux()
+
+    // Garder uniquement les devises de notre application
+    tauxActuels.value = {
+      EUR: nouveauxTaux.EUR,
+      USD: nouveauxTaux.USD,
+      TND: nouveauxTaux.TND,
+      GBP: nouveauxTaux.GBP,
+      JPY: nouveauxTaux.JPY,
+      CAD: nouveauxTaux.CAD
+    }
+
+    // Refaire la conversion avec les nouveaux taux
+    if (parseFloat(montant.value) > 0) {
+      convertir()
+    }
+  } catch (error) {
+    // Si l'API ne fonctionne pas,
+    // les taux fixes restent utilisés
+    tauxActuels.value = { ...taux }
+
+    console.log('API indisponible : utilisation des taux fixes')
+  }
+}
 
 // Ajouter une touche au montant
 function appuyer(touche) {
@@ -68,10 +101,11 @@ function convertir() {
   }
 
   // Convertir le montant vers EUR
-  const montantEnEuro = valeur / taux[deviseSource.value]
+  const montantEnEuro = valeur / tauxActuels.value[deviseSource.value]
 
   // Convertir EUR vers la devise cible
-  const montantConverti = montantEnEuro * taux[deviseCible.value]
+  const montantConverti =
+    montantEnEuro * tauxActuels.value[deviseCible.value]
 
   // Afficher le résultat avec 2 chiffres après la virgule
   resultat.value = montantConverti.toFixed(2)
@@ -92,11 +126,17 @@ function inverser() {
     convertir()
   }
 }
+
 // Conversion automatique
 watch([montant, deviseSource, deviseCible], () => {
   if (parseFloat(montant.value) > 0) {
     convertir()
   }
+})
+
+// Charger l'API au démarrage
+onMounted(() => {
+  chargerTaux()
 })
 </script>
 
@@ -311,5 +351,3 @@ select {
   }
 }
 </style>
-
-
